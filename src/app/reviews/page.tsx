@@ -149,7 +149,7 @@ export default function Reviews() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </AnimatedCard>
             </section>
           )}
 

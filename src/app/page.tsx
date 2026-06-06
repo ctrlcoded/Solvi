@@ -204,7 +204,7 @@ export default function Dashboard() {
               <p className="text-on-surface-variant text-sm">No reviews due right now. Great work!</p>
             </div>
           )}
-        </div>
+        </motion.div>
       </section>
     </div>
     </>
