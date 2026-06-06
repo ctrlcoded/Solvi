@@ -3,8 +3,33 @@
 import { useQuery } from "@tanstack/react-query";
 import { getQuestions, getTodayReviews } from "@/lib/api";
 import Link from "next/link";
+import { useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 export default function Dashboard() {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const springX = useSpring(mouseX, { stiffness: 100, damping: 30 });
+  const springY = useSpring(mouseY, { stiffness: 100, damping: 30 });
+
+  // Move the image slightly towards the mouse, max 25px in any direction
+  const translateX = useTransform(springX, [-1, 1], [-25, 25]);
+  const translateY = useTransform(springY, [-1, 1], [-25, 25]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      // Normalize mouse coordinates from -1 to 1 based on screen position
+      const x = (e.clientX / window.innerWidth) * 2 - 1;
+      const y = (e.clientY / window.innerHeight) * 2 - 1;
+      mouseX.set(x);
+      mouseY.set(y);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY]);
+
   const { data: questions } = useQuery({
     queryKey: ['questions'],
     queryFn: getQuestions,
@@ -60,14 +85,17 @@ export default function Dashboard() {
             {/* Soft pink gradient backdrop */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--color-primary)_0%,transparent_60%)] opacity-[0.15] blur-3xl scale-150 rounded-full mix-blend-multiply"></div>
             
-            <img 
+            <motion.img 
               src="/hero_illustration.png" 
               alt="Interview Prep Companion" 
-              className="relative z-10 w-full max-w-[500px] h-auto object-contain transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-6 hover:scale-105 mix-blend-multiply"
+              className="relative z-10 w-full max-w-[500px] h-auto object-contain transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] mix-blend-multiply"
               style={{ 
+                x: translateX,
+                y: translateY,
                 WebkitMaskImage: 'radial-gradient(50% 50% at 50% 50%, black 40%, transparent 100%)', 
                 maskImage: 'radial-gradient(50% 50% at 50% 50%, black 40%, transparent 100%)' 
               }}
+              whileHover={{ scale: 1.05 }}
             />
           </div>
         </div>
