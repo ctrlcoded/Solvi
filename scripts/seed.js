@@ -27,6 +27,7 @@ async function main() {
   await prisma.userQuestionProgress.deleteMany();
   await prisma.journalEntry.deleteMany();
   await prisma.dailyActivity.deleteMany();
+  await prisma.studyPlan.deleteMany();
   await prisma.question.deleteMany();
   await prisma.user.deleteMany();
 
