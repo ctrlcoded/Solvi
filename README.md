@@ -2,13 +2,7 @@
 
 Solvi is a modern, AI-powered spaced repetition tracker designed for mastering data structures and algorithms (specifically the NeetCode 150). It helps software engineers track their progress, intelligently schedule reviews using spaced repetition algorithms, and generate highly personalized, day-by-day study plans using Google's Gemini AI.
 
-## Screenshots
 
-<!-- Add screenshots here -->
-* **Dashboard Overview**: `![Dashboard](link)`
-* **Interactive Questions Table**: `![Questions](link)`
-* **AI Study Plan Generator**: `![Plan](link)`
-* **DSA Cheatsheet**: `![Cheatsheet](link)`
 
 ## Key Features
 
