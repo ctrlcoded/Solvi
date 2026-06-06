@@ -25,6 +25,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     
     return NextResponse.json(question);
   } catch (error) {
+    console.error('Failed to fetch question detail:', error);
     return NextResponse.json({ error: 'Failed to fetch question detail' }, { status: 500 });
   }
 }

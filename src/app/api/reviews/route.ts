@@ -59,6 +59,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, nextReviewDate: nextDate });
   } catch (error) {
+    console.error('Failed to submit review:', error);
     return NextResponse.json({ error: 'Failed to submit review' }, { status: 500 });
   }
 }
@@ -80,6 +81,7 @@ export async function GET() {
     });
     return NextResponse.json(questions);
   } catch (error) {
+    console.error('Failed to fetch reviews queue:', error);
     return NextResponse.json({ error: 'Failed to fetch reviews queue' }, { status: 500 });
   }
 }
