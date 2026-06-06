@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  progress       UserQuestionProgress[]
+  reviewSchedule ReviewSchedule[]
+  reviewLogs     ReviewLog[]
+  journalEntries JournalEntry[]
+  dailyActivity  DailyActivity[]
+  studyPlans     StudyPlan[]
+}
+
+model Question {
+  id         String   @id @default(uuid())
+  title      String
+  topic      String
+  difficulty String
+  url        String
+
+  progress       UserQuestionProgress[]
+  reviewSchedule ReviewSchedule[]
+  reviewLogs     ReviewLog[]
+}
+
+model UserQuestionProgress {
+  id              String   @id @default(uuid())
+  userId          String
+  questionId      String
+  status          String   @default("Unsolved") // Unsolved, Attempted, Solved, Mastered
+  totalAttempts   Int      @default(0)
+  bestSolveTimeMs Int?
+
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@unique([userId, questionId])
+}
+
+model ReviewSchedule {
+  id                 String   @id @default(uuid())
+  userId             String
+  questionId         String
+  nextReviewDate     DateTime
+  interval           Int      @default(0) // in days
+  easeFactor         Float    @default(2.5)
+  consecutiveCorrect Int      @default(0)
+
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@index([userId, nextReviewDate])
+}
+
+model ReviewLog {
+  id              String   @id @default(uuid())
+  userId          String
+  questionId      String
+  confidenceScore Int      // 1-5 scale
+  reviewDate      DateTime @default(now())
+  solveTimeMs     Int?
+
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@index([userId, reviewDate])
+}
+
+model JournalEntry {
+  id        String   @id @default(uuid())
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model DailyActivity {
+  id           String   @id @default(uuid())
+  userId       String
+  date         DateTime
+  solvesCount  Int      @default(0)
+  reviewsCount Int      @default(0)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, date])
+}
+
+model StudyPlan {
+  id        String   @id @default(uuid())
+  userId    String
+  totalDays Int
+  ratings   String   // JSON string of topic ratings
+  plan      String   // JSON string of the generated day-by-day plan
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
