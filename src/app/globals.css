@@ -141,3 +141,8 @@ body {
   background: rgba(249, 250, 251, 0.6);
   border: 1px solid #E5E7EB;
 }
+
+.bubble-shadow {
+  box-shadow: 0 0 20px 0px rgba(244, 114, 182, 0.15), 0 0 40px -5px rgba(244, 114, 182, 0.1);
+  border-color: rgba(244, 114, 182, 0.3) !important;
+}

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getStudyPlan, generateStudyPlan, getQuestions, StudyPlanDay } from "@/lib/api";
 import Link from "next/link";
+import { AnimatedCard } from "@/components/ui/AnimatedCard";
+import { AnimatedButton } from "@/components/ui/AnimatedButton";
 
 const TOPIC_ORDER = [
   "Arrays & Hashing", "Two Pointers", "Sliding Window", "Stack",
@@ -101,9 +103,9 @@ export default function PlanPage() {
               <span className="material-symbols-outlined text-[20px] text-primary">auto_awesome</span>
               <span className="font-headline-md text-headline-md font-semibold tracking-tight">Study Plan</span>
             </div>
-            <button onClick={() => setIsCreatingNew(true)} className="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-sm hover:brightness-110 transition-all active:scale-95">
+            <AnimatedButton onClick={() => setIsCreatingNew(true)} className="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-sm hover:brightness-110 shadow-sm">
               Create New Plan
-            </button>
+            </AnimatedButton>
           </div>
         </header>
 
@@ -115,7 +117,7 @@ export default function PlanPage() {
 
           <div className="space-y-3">
             {existingPlan.plan.days.map((day: StudyPlanDay) => (
-              <div key={day.day} className="glass-panel rounded-xl border border-outline-variant overflow-hidden">
+              <AnimatedCard key={day.day} className="glass-panel rounded-xl border border-outline-variant overflow-hidden">
                 <button onClick={() => toggleDay(day.day)} className="w-full flex items-center justify-between p-4 hover:bg-surface-container-high transition-colors text-left">
                   <div className="flex items-center gap-4">
                     <span className="bg-primary text-on-primary w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm">
@@ -144,7 +146,7 @@ export default function PlanPage() {
                     ))}
                   </div>
                 )}
-              </div>
+              </AnimatedCard>
             ))}
           </div>
         </div>
@@ -205,7 +207,7 @@ export default function PlanPage() {
                 { days: 30, label: "Balanced", desc: "~5/day" },
                 { days: 60, label: "Relaxed", desc: "~3/day" },
               ].map(preset => (
-                <button
+                <AnimatedButton
                   key={preset.days}
                   onClick={() => setTotalDays(preset.days)}
                   className={`p-4 rounded-xl border text-center transition-all ${totalDays === preset.days ? 'border-primary bg-primary/5' : 'border-outline-variant hover:border-outline'}`}
@@ -213,19 +215,19 @@ export default function PlanPage() {
                   <p className="font-bold text-on-surface text-lg">{preset.days}d</p>
                   <p className="text-on-surface-variant text-xs">{preset.label}</p>
                   <p className="text-on-surface-variant text-[10px]">{preset.desc}</p>
-                </button>
+                </AnimatedButton>
               ))}
             </div>
 
             <div className="flex gap-4">
               {existingPlan && (
-                <button onClick={() => setIsCreatingNew(false)} className="flex-1 border border-outline-variant text-on-surface py-4 rounded-xl font-label-md font-bold hover:bg-surface-container-high transition-colors">
+                <AnimatedButton onClick={() => setIsCreatingNew(false)} className="flex-1 border border-outline-variant text-on-surface py-4 rounded-xl font-label-md font-bold hover:bg-surface-container-high transition-colors">
                   Cancel
-                </button>
+                </AnimatedButton>
               )}
-              <button onClick={() => setStep(2)} className="flex-[2] bg-primary text-on-primary py-4 rounded-xl font-label-md font-bold text-lg hover:brightness-110 transition-all active:scale-[0.99]">
+              <AnimatedButton onClick={() => setStep(2)} className="flex-[2] bg-primary text-on-primary py-4 rounded-xl font-label-md font-bold text-lg hover:brightness-110 shadow-md">
                 Next → Rate Topics
-              </button>
+              </AnimatedButton>
             </div>
           </div>
         )}
@@ -241,14 +243,14 @@ export default function PlanPage() {
 
             <div className="space-y-3 mb-8">
               {TOPIC_ORDER.map(topic => (
-                <div key={topic} className="glass-panel p-4 rounded-xl border border-outline-variant flex items-center justify-between gap-4">
+                <AnimatedCard key={topic} className="glass-panel p-4 rounded-xl border border-outline-variant flex items-center justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <p className="font-label-md text-on-surface font-bold text-sm truncate">{topic}</p>
                     <p className="text-[11px] text-on-surface-variant">{topicCounts[topic] || 0} questions</p>
                   </div>
                   <div className="flex gap-2">
                     {(["Weak", "Average", "Strong"] as Rating[]).map(level => (
-                      <button
+                      <AnimatedButton
                         key={level}
                         onClick={() => setRatings(prev => ({ ...prev, [topic]: level }))}
                         className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
@@ -260,10 +262,10 @@ export default function PlanPage() {
                         }`}
                       >
                         {level}
-                      </button>
+                      </AnimatedButton>
                     ))}
                   </div>
-                </div>
+                </AnimatedCard>
               ))}
             </div>
 
@@ -285,12 +287,12 @@ export default function PlanPage() {
             </div>
 
             <div className="flex gap-4">
-              <button onClick={() => setStep(1)} className="flex-1 border border-outline-variant text-on-surface py-4 rounded-xl font-label-md font-bold hover:bg-surface-container-high transition-colors">
+              <AnimatedButton onClick={() => setStep(1)} className="flex-1 border border-outline-variant text-on-surface py-4 rounded-xl font-label-md font-bold hover:bg-surface-container-high transition-colors">
                 ← Back
-              </button>
-              <button onClick={handleGenerate} className="flex-[2] bg-primary text-on-primary py-4 rounded-xl font-label-md font-bold text-lg hover:brightness-110 transition-all active:scale-[0.99] disabled:opacity-50" disabled={!apiKey.trim()}>
+              </AnimatedButton>
+              <AnimatedButton onClick={handleGenerate} className="flex-[2] bg-primary text-on-primary py-4 rounded-xl font-label-md font-bold text-lg hover:brightness-110 shadow-md disabled:opacity-50" disabled={!apiKey.trim()}>
                 Generate Plan ✨
-              </button>
+              </AnimatedButton>
             </div>
           </div>
         )}
@@ -324,7 +326,7 @@ export default function PlanPage() {
 
             <div className="space-y-3">
               {plan.days.map((day: StudyPlanDay) => (
-                <div key={day.day} className="glass-panel rounded-xl border border-outline-variant overflow-hidden">
+                <AnimatedCard key={day.day} className="glass-panel rounded-xl border border-outline-variant overflow-hidden">
                   <button onClick={() => toggleDay(day.day)} className="w-full flex items-center justify-between p-4 hover:bg-surface-container-high transition-colors text-left">
                     <div className="flex items-center gap-4">
                       <span className="bg-primary text-on-primary w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm">
@@ -353,7 +355,7 @@ export default function PlanPage() {
                       ))}
                     </div>
                   )}
-                </div>
+                </AnimatedCard>
               ))}
             </div>
           </div>

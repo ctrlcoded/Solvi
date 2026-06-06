@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getTodayReviews, submitReview, Question } from "@/lib/api";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { AnimatedCard } from "@/components/ui/AnimatedCard";
+import { AnimatedButton } from "@/components/ui/AnimatedButton";
 
 export default function Reviews() {
   const [revealed, setRevealed] = useState(false);
@@ -57,9 +60,9 @@ export default function Reviews() {
               <span className="bg-primary/10 text-primary font-mono text-[12px] px-2 py-0.5 rounded ml-2 font-bold">{queue?.length || 0} left</span>
             )}
           </div>
-          <Link href="/settings" className="p-2 hover:bg-surface-container-high rounded-full transition-colors">
+          <AnimatedButton as={Link} href="/settings" className="p-2 hover:bg-surface-container-high rounded-full transition-colors flex items-center justify-center">
             <span className="material-symbols-outlined text-on-surface-variant">settings</span>
-          </Link>
+          </AnimatedButton>
         </div>
       </header>
 
@@ -85,7 +88,7 @@ export default function Reviews() {
             </div>
           ) : (
             <section className="mb-[64px]">
-              <div className="glass-panel rounded-2xl overflow-hidden relative border border-outline-variant shadow-2xl">
+              <AnimatedCard className="glass-panel rounded-2xl overflow-hidden relative border border-outline-variant shadow-2xl">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-tertiary"></div>
                 
                 <div className="p-[40px]">
@@ -106,12 +109,12 @@ export default function Reviews() {
                     {!revealed && (
                       <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-surface-container-low/40 backdrop-blur-sm border border-outline-variant border-dashed rounded-xl">
                         <span className="material-symbols-outlined text-[48px] text-on-surface-variant mb-[16px] opacity-50">visibility_off</span>
-                        <button 
+                        <AnimatedButton 
                           onClick={() => setRevealed(true)}
-                          className="bg-primary text-on-primary font-label-md text-label-md px-[24px] py-[12px] rounded-lg hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-primary/20"
+                          className="bg-primary text-on-primary font-label-md text-label-md px-[24px] py-[12px] rounded-lg shadow-lg shadow-primary/20"
                         >
                           I've thought about it — show answer
-                        </button>
+                        </AnimatedButton>
                       </div>
                     )}
 
@@ -127,21 +130,21 @@ export default function Reviews() {
 
                       <h3 className="font-headline-md text-headline-md text-on-surface font-bold mb-4">How did it go?</h3>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-[16px]">
-                        <button onClick={() => handleReview('Easy')} disabled={reviewMutation.isPending} className="flex flex-col items-center text-center p-[16px] rounded-xl border border-outline-variant hover:border-emerald-500 bg-surface-container hover:bg-emerald-500/10 transition-all group active:scale-95 disabled:opacity-50">
+                        <AnimatedButton onClick={() => handleReview('Easy')} disabled={reviewMutation.isPending} className="flex flex-col items-center text-center p-[16px] rounded-xl border border-outline-variant hover:border-emerald-500 bg-surface-container hover:bg-emerald-500/10 transition-all group disabled:opacity-50">
                           <span className="material-symbols-outlined text-emerald-500 mb-2 text-[24px] group-hover:scale-110 transition-transform" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                           <p className="font-label-md text-label-md text-on-surface font-bold mb-1">Easy</p>
                           <p className="text-[11px] text-on-surface-variant">Got it right away</p>
-                        </button>
-                        <button onClick={() => handleReview('Medium')} disabled={reviewMutation.isPending} className="flex flex-col items-center text-center p-[16px] rounded-xl border border-outline-variant hover:border-amber-500 bg-surface-container hover:bg-amber-500/10 transition-all group active:scale-95 disabled:opacity-50">
+                        </AnimatedButton>
+                        <AnimatedButton onClick={() => handleReview('Medium')} disabled={reviewMutation.isPending} className="flex flex-col items-center text-center p-[16px] rounded-xl border border-outline-variant hover:border-amber-500 bg-surface-container hover:bg-amber-500/10 transition-all group disabled:opacity-50">
                           <span className="material-symbols-outlined text-amber-500 mb-2 text-[24px] group-hover:scale-110 transition-transform">pending</span>
                           <p className="font-label-md text-label-md text-on-surface font-bold mb-1">Medium</p>
                           <p className="text-[11px] text-on-surface-variant">Needed some time</p>
-                        </button>
-                        <button onClick={() => handleReview('Hard')} disabled={reviewMutation.isPending} className="flex flex-col items-center text-center p-[16px] rounded-xl border border-outline-variant hover:border-rose-500 bg-surface-container hover:bg-rose-500/10 transition-all group active:scale-95 disabled:opacity-50">
+                        </AnimatedButton>
+                        <AnimatedButton onClick={() => handleReview('Hard')} disabled={reviewMutation.isPending} className="flex flex-col items-center text-center p-[16px] rounded-xl border border-outline-variant hover:border-rose-500 bg-surface-container hover:bg-rose-500/10 transition-all group disabled:opacity-50">
                           <span className="material-symbols-outlined text-rose-500 mb-2 text-[24px] group-hover:scale-110 transition-transform">error</span>
                           <p className="font-label-md text-label-md text-on-surface font-bold mb-1">Hard</p>
                           <p className="text-[11px] text-on-surface-variant">Couldn't solve it</p>
-                        </button>
+                        </AnimatedButton>
                       </div>
                     </div>
                   </div>
@@ -156,9 +159,24 @@ export default function Reviews() {
               <h3 className="font-label-md text-label-md text-on-surface uppercase tracking-widest font-bold mb-[24px]">Coming Up ({queue.length - 1})</h3>
               <div className="bg-surface-container-low border border-outline-variant rounded-xl overflow-hidden">
                 <table className="w-full text-left border-collapse">
-                  <tbody className="divide-y divide-outline-variant/50">
+                  <motion.tbody 
+                    initial="hidden"
+                    animate="visible"
+                    variants={{
+                      hidden: { opacity: 0 },
+                      visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+                    }}
+                    className="divide-y divide-outline-variant/50"
+                  >
                     {queue.slice(1).map(q => (
-                      <tr key={q.id} className="hover:bg-surface-container-high transition-colors group opacity-60">
+                      <motion.tr 
+                        key={q.id} 
+                        variants={{
+                          hidden: { opacity: 0, x: -10 },
+                          visible: { opacity: 1, x: 0 }
+                        }}
+                        className="hover:bg-surface-container-high transition-colors group opacity-60"
+                      >
                         <td className="px-[24px] py-[16px]">
                           <p className="font-label-md text-on-surface font-semibold">{q.title}</p>
                         </td>
@@ -168,9 +186,9 @@ export default function Reviews() {
                         <td className="px-[24px] py-[16px] text-right">
                           <span className={`font-medium text-xs ${q.difficulty === 'Easy' ? 'text-emerald-500' : q.difficulty === 'Medium' ? 'text-amber-500' : 'text-rose-500'}`}>{q.difficulty}</span>
                         </td>
-                      </tr>
+                      </motion.tr>
                     ))}
-                  </tbody>
+                  </motion.tbody>
                 </table>
               </div>
             </section>

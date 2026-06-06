@@ -5,6 +5,8 @@ import { getQuestions, getTodayReviews } from "@/lib/api";
 import Link from "next/link";
 import { useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { AnimatedCard } from "@/components/ui/AnimatedCard";
+import { AnimatedButton } from "@/components/ui/AnimatedButton";
 
 export default function Dashboard() {
   const mouseX = useMotionValue(0);
@@ -51,9 +53,9 @@ export default function Dashboard() {
         <div className="flex justify-between items-center h-full px-[24px] max-w-[1400px] mx-auto w-full">
           <h2 className="font-headline-md text-headline-md font-bold tracking-tight text-on-surface">Dashboard</h2>
           <div className="flex items-center gap-6 ml-6">
-            <Link href="/settings" className="text-on-surface-variant hover:text-primary transition-colors">
+            <AnimatedButton as={Link} href="/settings" className="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">
               <span className="material-symbols-outlined">settings</span>
-            </Link>
+            </AnimatedButton>
           </div>
         </div>
       </header>
@@ -71,12 +73,12 @@ export default function Dashboard() {
                 Track your progress, review with spaced repetition, and generate an AI-powered study plan tailored to your timeline.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/plan" className="bg-primary text-on-primary px-8 py-3.5 rounded-lg font-label-md font-bold transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30 active:scale-[0.98]">
+              <AnimatedButton as={Link} href="/plan" className="bg-primary text-on-primary px-8 py-3.5 rounded-lg font-label-md font-bold transition-all shadow-md shadow-primary/30">
                   Create Study Plan
-              </Link>
-              <Link href="/questions" className="bg-surface border border-outline-variant text-on-surface flex items-center justify-center px-8 py-3.5 rounded-lg font-label-md font-bold transition-all hover:bg-surface-container-high hover:-translate-y-1 hover:shadow-md">
+              </AnimatedButton>
+              <AnimatedButton as={Link} href="/questions" className="bg-surface border border-outline-variant text-on-surface flex items-center justify-center px-8 py-3.5 rounded-lg font-label-md font-bold transition-all hover:bg-surface-container-high shadow-sm">
                   View Questions
-              </Link>
+              </AnimatedButton>
             </div>
           </div>
 
@@ -102,24 +104,29 @@ export default function Dashboard() {
       </section>
 
       {/* Stats */}
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[24px] mb-[48px]">
-        <div className="glass-card p-[24px] rounded-xl">
+      <motion.section 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, staggerChildren: 0.1 }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[24px] mb-[48px]"
+      >
+        <AnimatedCard className="glass-card p-[24px] rounded-xl">
           <div className="flex justify-between items-start mb-4">
             <span className="material-symbols-outlined text-primary">done_all</span>
             <span className="text-primary font-bold text-[12px]">Total</span>
           </div>
           <p className="font-label-md text-label-md text-on-surface-variant mb-1">Solved</p>
           <h3 className="font-headline-md text-headline-md font-bold text-on-surface">{solvedCount} / {totalCount}</h3>
-        </div>
-        <div className="glass-card p-[24px] rounded-xl">
+        </AnimatedCard>
+        <AnimatedCard className="glass-card p-[24px] rounded-xl">
           <div className="flex justify-between items-start mb-4">
             <span className="material-symbols-outlined text-primary">verified</span>
             <span className="text-primary font-bold text-[12px]">In Progress</span>
           </div>
           <p className="font-label-md text-label-md text-on-surface-variant mb-1">Attempted</p>
           <h3 className="font-headline-md text-headline-md font-bold text-on-surface">{attemptedCount}</h3>
-        </div>
-        <div className="glass-card p-[24px] rounded-xl">
+        </AnimatedCard>
+        <AnimatedCard className="glass-card p-[24px] rounded-xl">
           <div className="flex justify-between items-start mb-4">
             <span className="material-symbols-outlined text-primary">percent</span>
             <span className="text-primary font-bold text-[12px]">Progress</span>
@@ -128,16 +135,16 @@ export default function Dashboard() {
           <h3 className="font-headline-md text-headline-md font-bold text-on-surface">
             {totalCount > 0 ? Math.round((solvedCount / totalCount) * 100) : 0}%
           </h3>
-        </div>
-        <div className="glass-card p-[24px] rounded-xl">
+        </AnimatedCard>
+        <AnimatedCard className="glass-card p-[24px] rounded-xl">
           <div className="flex justify-between items-start mb-4">
             <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>timer</span>
             <span className="text-error font-bold text-[12px]">Due</span>
           </div>
           <p className="font-label-md text-label-md text-on-surface-variant mb-1">Reviews Today</p>
           <h3 className="font-headline-md text-headline-md font-bold text-on-surface">{reviewDueCount}</h3>
-        </div>
-      </section>
+        </AnimatedCard>
+      </motion.section>
 
       {/* Review Queue */}
       <section>
@@ -151,25 +158,44 @@ export default function Dashboard() {
             START REVIEW
           </Link>
         </div>
-        <div className="flex flex-col gap-4">
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1 }
+            }
+          }}
+          className="flex flex-col gap-4"
+        >
           {reviews?.slice(0, 5).map((q) => (
-            <Link key={q.id} href={`/questions/${q.id}`} className="glass-card p-6 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-6 group">
-              <div className="flex items-center gap-6">
-                <div className="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                  <span className="material-symbols-outlined">code</span>
-                </div>
-                <div>
-                  <h4 className="font-body-lg text-body-lg font-bold text-on-surface mb-1">{q.title}</h4>
-                  <div className="flex items-center gap-4 text-[12px]">
-                    <span className="text-on-surface-variant flex items-center gap-1"><span className="material-symbols-outlined text-[14px]">category</span> {q.topic}</span>
-                    <span className={`px-2 py-0.5 rounded font-bold ${q.difficulty === 'Easy' ? 'bg-emerald-500/20 text-emerald-500' : q.difficulty === 'Medium' ? 'bg-amber-500/20 text-amber-500' : 'bg-rose-500/20 text-rose-500'}`}>{q.difficulty}</span>
+            <motion.div 
+              key={q.id}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 }
+              }}
+            >
+              <AnimatedCard as={Link} href={`/questions/${q.id}`} className="glass-card p-6 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-6 group cursor-pointer">
+                <div className="flex items-center gap-6">
+                  <div className="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                    <span className="material-symbols-outlined">code</span>
+                  </div>
+                  <div>
+                    <h4 className="font-body-lg text-body-lg font-bold text-on-surface mb-1">{q.title}</h4>
+                    <div className="flex items-center gap-4 text-[12px]">
+                      <span className="text-on-surface-variant flex items-center gap-1"><span className="material-symbols-outlined text-[14px]">category</span> {q.topic}</span>
+                      <span className={`px-2 py-0.5 rounded font-bold ${q.difficulty === 'Easy' ? 'bg-emerald-500/20 text-emerald-500' : q.difficulty === 'Medium' ? 'bg-amber-500/20 text-amber-500' : 'bg-rose-500/20 text-rose-500'}`}>{q.difficulty}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <span className="bg-surface-container-high text-on-surface hover:bg-primary hover:text-on-primary px-6 py-2 rounded-lg font-label-md font-bold transition-all text-center">
-                Practice
-              </span>
-            </Link>
+                <span className="bg-surface-container-high text-on-surface group-hover:bg-primary group-hover:text-on-primary px-6 py-2 rounded-lg font-label-md font-bold transition-all text-center">
+                  Practice
+                </span>
+              </AnimatedCard>
+            </motion.div>
           ))}
           {(!reviews || reviews.length === 0) && (
             <div className="text-center p-8 bg-surface-container-low rounded-xl border border-outline-variant">

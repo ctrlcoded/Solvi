@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getQuestions, getTodayReviews } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function Questions() {
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -215,7 +216,18 @@ export default function Questions() {
                     <th className="px-[24px] py-4 font-label-md text-on-surface-variant uppercase text-[10px] tracking-widest">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-outline-variant/50">
+                <motion.tbody 
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                      opacity: 1,
+                      transition: { staggerChildren: 0.05 }
+                    }
+                  }}
+                  className="divide-y divide-outline-variant/50"
+                >
                   {isLoading && (
                     <tr>
                       <td colSpan={4} className="p-8 text-center text-on-surface-variant">
@@ -240,8 +252,12 @@ export default function Questions() {
                     </tr>
                   )}
                   {filtered.map((q) => (
-                    <tr 
+                    <motion.tr 
                       key={q.id} 
+                      variants={{
+                        hidden: { opacity: 0, y: 10 },
+                        visible: { opacity: 1, y: 0 }
+                      }}
                       onClick={() => router.push(`/questions/${q.id}`)}
                       className="hover:bg-surface-container-high transition-colors cursor-pointer group"
                     >
@@ -273,9 +289,9 @@ export default function Questions() {
                           </select>
                         </div>
                       </td>
-                    </tr>
+                    </motion.tr>
                   ))}
-                </tbody>
+                </motion.tbody>
               </table>
             </div>
             <div className="px-[24px] py-4 bg-surface-container border-t border-outline-variant flex items-center justify-between">
